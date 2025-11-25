@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout{% endblock %}
+{% block page_header %}Saída de Equipamento{% endblock %}
+
+{% block content %}
+    <h1>📤 Checkout de Equipamento (Movimentação)</h1>
+
+    <p>Use esta página para registrar a retirada de um equipamento de sua localização atual para uma nova Sala de Destino. O equipamento será marcado como **"Em Trânsito"**.</p>
+
+    <div class="flash warning" style="margin-bottom: 20px;">
+        <strong>Instrução:</strong> O equipamento será marcado como 'Em Trânsito'. O Check-in confirmará a chegada.
+    </div>
+
+    <form method="POST" action="{{ url_for('main.checkout') }}">
+
+        <div style="margin-bottom: 15px;">
+            <label for="numero_serie" style="display: inline-block; width: 200px;">Número de Série / Código de Barras:</label>
+            <input type="text" id="numero_serie" name="numero_serie" required
+                   placeholder="Digite ou escaneie o Nº de Série" style="width: 300px;">
+        </div>
+
+        <hr>
+
+        <h2>Destino Planejado:</h2>
+
+        <div style="margin-bottom: 15px;">
+            <label for="predio_destino" style="display: inline-block; width: 200px;">Prédio de Destino:</label>
+            <select id="predio_destino" style="width: 300px;" onchange="filterSalas()">
+                <option value="">-- Selecione o Prédio --</option>
+                {% for predio in predios %}
+                    <option value="{{ predio.id }}">{{ predio.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+            <label for="sala_destino_id" style="display: inline-block; width: 200px;">Sala de Destino:</label>
+            <select id="sala_destino_id" name="sala_destino_id" required style="width: 300px;">
+                <option value="">-- Selecione a Sala --</option>
+            </select>
+        </div>
+
+        <button type="submit"
+                style="padding: 10px 20px; background-color: #ff9800; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Registrar Checkout (Marcar como 'Em Trânsito')
+        </button>
+    </form>
+
+    {% endblock %}

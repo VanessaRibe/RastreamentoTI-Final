@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard de Análise{% endblock %}
+{% block page_header %}Bem-vindo(a), {{ current_user.username }}!{% endblock %}
+
+{% block content %}
+
+    <div class="flash success" style="margin-bottom: 30px;">
+        Login bem-sucedido. Bem-vindo(a), {{ current_user.username }}!
+    </div>
+
+    <div class="metrics-grid">
+
+        <div class="card">
+            <h4>📦 Total de Ativos</h4>
+            <div class="metric-value" style="color: #333;">{{ metrics.total }}</div>
+        </div>
+        <div class="card">
+            <h4>✅ Em Estoque</h4>
+            <div class="metric-value" style="color: var(--success-color);">{{ metrics['Em Estoque'] }}</div>
+        </div>
+        <div class="card">
+            <h4>💻 Em Uso (Locais)</h4>
+            <div class="metric-value" style="color: blue;">{{ metrics['Em Uso'] }}</div>
+        </div>
+        <div class="card">
+            <h4>🚚 Em Trânsito</h4>
+            <div class="metric-value" style="color: orange;">{{ metrics['Em Trânsito'] }}</div>
+        </div>
+    </div>
+
+    <hr style="margin: 40px 0;">
+
+    <h3 style="margin-bottom: 20px;">Ações Rápidas de Gerenciamento</h3>
+    <div class="action-cards-grid">
+
+        <div class="action-card">
+            <span class="card-icon">📍</span>
+            <div class="action-card-title">Gerenciar Locais</div>
+            <p style="font-size: 0.9em;">Criar/editar prédios e salas.</p>
+            <a href="{{ url_for('main.gerenciar_locais') }}" class="card-button red">Gerenciar</a>
+        </div>
+
+        <div class="action-card">
+            <span class="card-icon" style="color: var(--success-color);">➕</span>
+            <div class="action-card-title">Cadastrar Novo Item</div>
+            <p style="font-size: 0.9em;">Cadastrar um item individualmente.</p>
+            <a href="{{ url_for('main.cadastrar_equipamento') }}" class="card-button" style="background-color: var(--success-color);">Cadastrar</a>
+        </div>
+
+        <div class="action-card">
+            <span class="card-icon" style="color: #2c449c;">⬆️</span>
+            <div class="action-card-title">Upload em Lote (Excel)</div>
+            <p style="font-size: 0.9em;">Carregar múltiplos ativos via planilha.</p>
+            <a href="{{ url_for('main.upload_equipamentos') }}" class="card-button" style="background-color: #2c449c;">Fazer Upload</a>
+        </div>
+
+    </div>
+
+    <hr style="margin: 40px 0;">
+
+    <h3 style="margin-bottom: 20px;">Ativos Cadastrados (Simulação)</h3>
+    <table style="width: 100%;">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Número de Série</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Notebook ASUS X515JA</td>
+                <td>SN123456</td>
+                <td><span style="background-color: var(--success-color); color: white; padding: 3px 8px; border-radius: 4px;">Ativo</span></td>
+            </tr>
+            <tr>
+                <td>Servidor DELL R440</td>
+                <td>SN664321</td>
+                <td><span style="background-color: orange; color: white; padding: 3px 8px; border-radius: 4px;">Manutenção</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+{% endblock %}

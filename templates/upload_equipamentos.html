@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Upload de Lote{% endblock %}
+
+{% block content %}
+    <h1>⬆️ Upload de Equipamentos em Lote (Excel)</h1>
+
+    <p>Utilize esta ferramenta para carregar múltiplos equipamentos de T.I. de uma só vez através de um arquivo Excel (.xlsx).</p>
+
+    <div class="flash warning" style="margin-bottom: 25px;">
+        O arquivo Excel deve conter **EXATAMENTE** as seguintes colunas (no cabeçalho, em maiúsculo):<br>
+        1. **NUMERO_SERIE**<br>
+        2. **NOME_EQUIPAMENTO**
+        <br>Todos os equipamentos serão cadastrados como **"Em Estoque"** no local padrão.
+    </div>
+
+    <form method="POST" action="{{ url_for('main.upload_equipamentos') }}" enctype="multipart/form-data">
+
+        <div style="margin-bottom: 20px;">
+            <label for="file" style="font-weight: bold; display: block; margin-bottom: 5px;">Selecione o Arquivo Excel (.xlsx):</label>
+            <input type="file" id="file" name="file" accept=".xlsx, .xls" required>
+        </div>
+
+        <button type="submit"
+                style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Processar Upload de Lote
+        </button>
+    </form>
+
+{% endblock %}

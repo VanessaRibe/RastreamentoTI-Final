@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Retorno ao Estoque{% endblock %}
+
+{% block content %}
+    <h1>🔙 Retorno de Equipamento ao Estoque</h1>
+
+    <p>Use esta página para registrar o retorno de um equipamento para a Sala de Estoque Padrão.</p>
+
+    <div class="flash warning" style="margin-bottom: 20px;">
+        <strong>Aviso:</strong> O status será definido como **"Em Estoque"** e uma **Notificação** será enviada a todos os Administradores.
+    </div>
+
+    <form method="POST" action="{{ url_for('main.retorno_estoque') }}" onsubmit="return confirm('Tem certeza que deseja retornar este equipamento ao estoque e notificar os administradores?')">
+
+        <div style="margin-bottom: 15px;">
+            <label for="numero_serie" style="display: inline-block; width: 200px;">Número de Série / Código de Barras:</label>
+            <input type="text" id="numero_serie" name="numero_serie" required
+                   placeholder="Digite ou escaneie o Nº de Série" style="width: 300px;">
+        </div>
+
+        <br>
+        <button type="submit"
+                style="padding: 10px 20px; background-color: #5d4037; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Registrar Retorno ao Estoque
+        </button>
+    </form>
+{% endblock %}

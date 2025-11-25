@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Check-in de Equipamento{% endblock %}
+{% block page_header %}Confirmação de Chegada (Check-in){% endblock %}
+
+{% block content %}
+    <h1>📥 Check-in de Equipamento</h1>
+
+    <p>Use esta página para registrar a chegada de um equipamento que está atualmente **"Em Trânsito"**.</p>
+
+    <div class="flash success" style="margin-bottom: 20px;">
+        <strong>Resultado:</strong> O sistema buscará o destino planejado e definirá o status do ativo como **"Em Uso (Sala X)"**, atualizando sua localização.
+    </div>
+
+    <form method="POST" action="{{ url_for('main.checkin') }}">
+
+        <div style="margin-bottom: 15px;">
+            <label for="numero_serie" style="display: inline-block; width: 200px;">Número de Série / Código de Barras:</label>
+            <input type="text" id="numero_serie" name="numero_serie" required
+                   placeholder="Digite ou escaneie o Nº de Série" style="width: 300px;">
+        </div>
+
+        <br>
+        <button type="submit"
+                style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Registrar Check-in (Confirmar Chegada)
+        </button>
+    </form>
+{% endblock %}

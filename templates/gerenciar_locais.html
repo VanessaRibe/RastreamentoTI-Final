@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Gerenciar Locais{% endblock %}
+{% block page_header %}Gerenciamento de Prédios e Salas{% endblock %}
+
+{% block content %}
+
+    <p>Use esta página para configurar os locais físicos onde os equipamentos serão rastreados.</p>
+
+    <hr>
+
+    <h2>Adicionar Novo Prédio
+        <button type="button" onclick="toggleForm('form_predio')" style="background: #ccc; border: none; padding: 5px 10px; cursor: pointer;">+/-</button>
+    </h2>
+    <form id="form_predio" method="POST" action="{{ url_for('main.gerenciar_locais') }}" style="margin-bottom: 30px; display: none;">
+        <input type="hidden" name="action" value="add_predio">
+        <div>
+            <label for="nome_predio">Nome do Prédio:</label>
+            <input type="text" id="nome_predio" name="nome" required style="width: 300px;">
+            <button type="submit">Criar Prédio</button>
+        </div>
+    </form>
+
+    <h3>Prédios Existentes ({{ predios|length }})</h3>
+    {% if predios %}
+        <table style="width: 50%; margin-bottom: 40px;">
+            <thead>
+                <tr style="background-color: #eee;">
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for predio in predios %}
+                    <tr>
+                        <td style="text-align: center;">{{ predio.id }}</td>
+                        <td>{{ predio.nome }}</td>
+                        <td style="text-align: center;">
+                            {% if predio.salas.count() == 0 %}
+                                <form method="POST" action="{{ url_for('main.deletar_predio', predio_id=predio.id) }}"
+                                      style="display: inline;"
+                                      onsubmit="return confirm('Tem certeza que deseja DELETAR o prédio \'{{ predio.nome }}\'?')">
+                                    <button type="submit" style="color: red; background: none; border: none; cursor: pointer;">Deletar</button>
+                                </form>
+                            {% else %}
+                                <span style="color: gray;">({{ predio.salas.count() }} Salas)</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhum prédio cadastrado.</p>
+    {% endif %}
+
+    <hr>
+
+    <h2>Adicionar Nova Sala
+        <button type="button" onclick="toggleForm('form_sala')" style="background: #ccc; border: none; padding: 5px 10px; cursor: pointer;">+/-</button>
+    </h2>
+    <form id="form_sala" method="POST" action="{{ url_for('main.gerenciar_locais') }}" style="display: none;">
+        <input type="hidden" name="action" value="add_sala">
+        <div>
+            <label for="predio_id">Selecionar Prédio:</label>
+            <select id="predio_id" name="predio_id" required>
+                <option value="">-- Selecione um Prédio --</option>
+                {% for predio in predios %}
+                    <option value="{{ predio.id }}">{{ predio.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <br>
+        <div>
+            <label for="nome_sala">Nome da Sala:</label>
+            <input type="text" id="nome_sala" name="nome" required>
+            <button type="submit">Criar Sala</button>
+        </div>
+    </form>
+
+    <hr>
+
+    <h3>Salas Existentes ({{ salas|length }})</h3>
+    {% if salas %}
+        <table style="width: 80%;">
+            <thead>
+                <tr style="background-color: #eee;">
+                    <th>ID</th>
+                    <th>Nome da Sala</th>
+                    <th>Prédio Associado</th>
+                    <th>Ativos</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sala in salas %}
+                    <tr>
+                        <td style="text-align: center;">{{ sala.id }}</td>
+                        <td>{{ sala.nome }}</td>
+                        <td>{{ sala.predio.nome }}</td>
+                        <td style="text-align: center;">{{ sala.equipamentos.count() }}</td>
+                        <td style="text-align: center;">
+                            {% if sala.equipamentos.count() == 0 %}
+                                <form method="POST" action="{{ url_for('main.deletar_sala', sala_id=sala.id) }}"
+                                      style="display: inline;"
+                                      onsubmit="return confirm('Tem certeza que deseja DELETAR a sala \'{{ sala.nome }}\'?')">
+                                    <button type="submit" style="color: red; background: none; border: none; cursor: pointer;">Deletar</button>
+                                </form>
+                            {% else %}
+                                <span style="color: gray;">(Em Uso)</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhuma sala cadastrada.</p>
+    {% endif %}
+
+    <script>
+        function toggleForm(formId) {
+            const form = document.getElementById(formId);
+            if (form.style.display === 'none') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+    </script>
+{% endblock %}

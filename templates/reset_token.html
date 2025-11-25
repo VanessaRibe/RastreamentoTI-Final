@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Senha</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="login-page-wrapper">
+
+    <div class="login-card">
+        <h2>Definir Nova Senha</h2>
+        <p style="font-size: 0.9em; margin-bottom: 20px;">
+            Insira sua nova senha abaixo.
+        </p>
+
+        <form method="POST">
+
+            <label for="new_password">Nova Senha</label>
+            <input type="password" id="new_password" name="new_password" required>
+
+            <button type="submit" class="login-submit-btn">Redefinir Senha</button>
+        </form>
+    </div>
+</body>
+</html>

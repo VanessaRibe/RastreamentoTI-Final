@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes: {{ equipamento.numero_serie }}{% endblock %}
+{% block page_header %}Detalhes do Equipamento: {{ equipamento.nome_equipamento }}{% endblock %}
+
+{% block content %}
+
+    <p>Número de Série: <strong>{{ equipamento.numero_serie }}</strong></p>
+
+    <div style="display: flex; gap: 40px; margin-bottom: 30px; border: 1px solid #ccc; padding: 20px; border-radius: 8px;">
+
+        <div>
+            <h2>Status Atual</h2>
+            <p style="font-size: 1.5em; font-weight: bold; color:
+                {% if 'Em Estoque' in equipamento.status_atual %}green
+                {% elif 'Em Trânsito' in equipamento.status_atual %}orange
+                {% elif 'Em Uso' in equipamento.status_atual %}blue
+                {% else %}gray
+                {% endif %};">
+                {{ equipamento.status_atual }}
+            </p>
+
+            <p><strong>Localização Atual:</strong>
+                {% if local_atual %}
+                    {{ local_atual.nome }} ({{ local_atual.predio.nome }})
+                {% else %}
+                    Não definida
+                {% endif %}
+            </p>
+            <p><strong>Cadastrado por:</strong> {{ responsavel_cadastro.username }}</p>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <a href="{{ url_for('main.imprimir_etiqueta', equipamento_id=equipamento.id) }}"
+           target="_blank"
+           style="padding: 10px 20px; background-color: var(--primary-color); color: white; border-radius: 5px; text-decoration: none; font-weight: bold;">
+            🏷️ Gerar Etiqueta Imprimível
+        </a>
+    </div>
+
+    <hr>
+
+    <h2>📜 Histórico de Movimentação (Checkpoints)</h2>
+    {% if historico %}
+        <table>
+            <thead>
+                <tr style="background-color: #eee;">
+                    <th style="width: 15%;">Data/Hora</th>
+                    <th style="width: 15%;">Responsável</th>
+                    <th>Status Anterior</th>
+                    <th>Status Novo</th>
+                    <th style="width: 30%;">Local de Destino</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for checkpoint in historico %}
+                    <tr>
+                        <td>{{ checkpoint.data_alteracao.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                        <td>{{ checkpoint.responsavel_alteracao.username }}</td>
+                        <td>{{ checkpoint.status_anterior }}</td>
+                        <td><strong>{{ checkpoint.status_novo }}</strong></td>
+                        <td>
+                            {% if checkpoint.sala_destino %}
+                                {{ checkpoint.sala_destino.nome }} ({{ checkpoint.predio_destino.nome }})
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhum histórico de movimentação encontrado.</p>
+    {% endif %}
+
+{% endblock %}

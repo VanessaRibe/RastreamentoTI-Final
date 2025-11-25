@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Minhas Notificações{% endblock %}
+
+{% block content %}
+    <h1>🔔 Minhas Notificações</h1>
+
+    <p>Total de notificações: <strong>{{ notificacoes|length }}</strong>.</p>
+
+    {% if notificacoes_nao_lidas_count > 0 %}
+        <div class="flash danger" style="margin-bottom: 20px;">
+            <p>Você tem <strong>{{ notificacoes_nao_lidas_count }}</strong> notificações não lidas.</p>
+
+            <form method="POST" action="{{ url_for('main.marcar_todas_lidas') }}" style="display: inline;">
+                <button type="submit"
+                        style="padding: 8px 15px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Marcar Todas como Lidas
+                </button>
+            </form>
+        </div>
+    {% else %}
+        <p class="flash success">🎉 Não há notificações não lidas!</p>
+    {% endif %}
+
+    <hr>
+
+    <table border="1" style="width: 100%;">
+        <thead>
+            <tr style="background-color: #333; color: white;">
+                <th style="width: 15%;">Data</th>
+                <th>Mensagem</th>
+                <th style="width: 10%;">Status</th>
+                <th style="width: 10%;">Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for notif in notificacoes %}
+                <tr style="background-color: {% if not notif.lida %}#fff0f0{% else %}#f9f9f9{% endif %};">
+                    <td>{{ notif.data_criacao.strftime('%d/%m %H:%M:%S') }}</td>
+                    <td>
+                        {{ notif.mensagem }}
+                        {% if notif.equipamento %}
+                            (<a href="{{ url_for('main.detalhes_equipamento', equipamento_id=notif.equipamento.id) }}" style="font-size: 0.9em;">Ver Equipamento</a>)
+                        {% endif %}
+                    </td>
+                    <td style="color: {% if not notif.lida %}red{% else %}green{% endif %};">
+                        {% if not notif.lida %}<strong>Não Lida</strong>{% else %}Lida{% endif %}
+                    </td>
+                    <td>
+                        {% if not notif.lida %}
+                            <form method="POST" action="{{ url_for('main.marcar_notificacao_lida', notificacao_id=notif.id) }}" style="display: inline;">
+                                <button type="submit" style="color: blue; background: none; border: none; cursor: pointer;">Marcar Lida</button>
+                            </form>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Auditoria Geral de Checkpoints{% endblock %}
+
+{% block content %}
+    <h1>📜 Auditoria Geral de Checkpoints</h1>
+
+    <p>Esta tabela exibe o histórico completo de todas as movimentações de ativos. (Total de {{ checkpoints|length }} registros).</p>
+
+    <div style="margin-bottom: 25px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+
+        <label for="filtro_equipamento" style="font-weight: bold;">Equipamento:</label>
+        <select id="filtro_equipamento" onchange="filterTable()" style="padding: 5px;">
+            <option value="">-- Todos os Equipamentos --</option>
+            {% for equipamento in equipamentos %}
+                <option value="{{ equipamento.numero_serie }}">{{ equipamento.nome_equipamento }} ({{ equipamento.numero_serie }})</option>
+            {% endfor %}
+        </select>
+
+        <label for="filtro_status" style="font-weight: bold;">Status Novo:</label>
+        <select id="filtro_status" onchange="filterTable()" style="padding: 5px;">
+            <option value="">-- Qualquer Status --</option>
+            <option value="Em Estoque">Em Estoque</option>
+            <option value="Em Uso">Em Uso</option>
+            <option value="Em Trânsito">Em Trânsito</option>
+            <option value="N/A (Cadastro)">N/A (Cadastro/Lote)</option>
+        </select>
+
+        <span style="margin-left: auto;">
+            <a href="{{ url_for('main.exportar_dados') }}" class="btn-export" style="padding: 8px 15px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px;">
+                ⬇️ Exportar Tudo (Excel)
+            </a>
+        </span>
+    </div>
+
+    <table border="1">
+        <thead>
+            <tr style="background-color: #333; color: white;">
+                <th style="width: 15%;">Data/Hora</th>
+                <th style="width: 15%;">Série</th>
+                <th style="width: 15%;">Responsável</th>
+                <th>Status Anterior</th>
+                <th>Status Novo</th>
+                <th>Local de Destino</th>
+            </tr>
+        </thead>
+        <tbody id="checkpoint_table_body">
+            {% for checkpoint in checkpoints %}
+                <tr data-serie="{{ checkpoint.equipamento.numero_serie }}"
+                    data-status-novo="{{ checkpoint.status_novo.split('(')[0].strip() }}">
+                    <td>{{ checkpoint.data_alteracao.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                    <td>
+                        <a href="{{ url_for('main.detalhes_equipamento', equipamento_id=checkpoint.equipamento.id) }}">
+                            {{ checkpoint.equipamento.numero_serie }}
+                        </a>
+                    </td>
+                    <td>{{ checkpoint.responsavel_alteracao.username }}</td>
+                    <td>{{ checkpoint.status_anterior }}</td>
+                    <td><strong>{{ checkpoint.status_novo }}</strong></td>
+                    <td>
+                        {% if checkpoint.sala_destino %}
+                            {{ checkpoint.sala_destino.nome }} ({{ checkpoint.predio_destino.nome }})
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function filterTable() {
+            const selectedSerie = document.getElementById('filtro_equipamento').value;
+            const selectedStatus = document.getElementById('filtro_status').value;
+            const rows = document.getElementById('checkpoint_table_body').getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const rowSerie = row.getAttribute('data-serie');
+                const rowStatus = row.getAttribute('data-status-novo');
+
+                // Checagem de Filtros
+                const matchesSerie = (selectedSerie === "" || rowSerie === selectedSerie);
+                const matchesStatus = (selectedStatus === "" || rowStatus === selectedStatus);
+
+                if (matchesSerie && matchesStatus) {
+                    row.style.display = ""; // Mostra
+                } else {
+                    row.style.display = "none"; // Esconde
+                }
+            }
+        }
+    </script>
+
+{% endblock %}

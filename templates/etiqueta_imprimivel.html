@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etiqueta {{ equipamento.numero_serie }}</title>
+    <style>
+        /* Estilos base para a tela */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+
+        /* Define a área da etiqueta. Dimensões de impressão: 70mm x 40mm */
+        .etiqueta {
+            width: 70mm;
+            height: 40mm;
+            border: 1px dashed #aaa; /* Borda leve para visualização */
+            padding: 5mm;
+            text-align: center;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .header-propriedade {
+            font-size: 8pt;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 2px;
+            margin-bottom: 5px;
+        }
+
+        /* Área do Código de Barras */
+        .barcode-area {
+            font-size: 1.5em; /* Número de série grande */
+            font-weight: 900;
+            color: #000;
+            padding: 5px 0;
+        }
+        .info-tag {
+            font-size: 8pt;
+            color: #666;
+        }
+        .footer-local {
+            font-size: 7pt;
+            color: #555;
+        }
+
+        /* Ocultar tudo que não for a etiqueta na impressão */
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .etiqueta {
+                border: none;
+                width: 70mm;
+                height: 40mm;
+                /* Resetar margem do Chrome/Edge */
+                -webkit-print-color-adjust: exact;
+            }
+            .btn-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button onclick="window.print()" class="btn-print" style="margin-bottom: 10px; padding: 10px; cursor: pointer;">Imprimir Etiqueta</button>
+
+    <div class="etiqueta">
+
+        <div class="header-propriedade">
+            PROPRIEDADE CETRUS | RASTREAMENTO TI
+        </div>
+
+        <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+
+            <div class="barcode-area">
+                {{ equipamento.numero_serie }}
+            </div>
+            <div class="info-tag">
+                SÉRIE / CÓDIGO DE BARRAS
+            </div>
+
+        </div>
+
+        <div class="footer-local">
+            {{ equipamento.nome_equipamento }} | Local: {{ local_atual.nome }}
+        </div>
+    </div>
+
+    <p class="btn-print" style="margin-top: 10px; font-size: 0.9em;">Ajuste as margens do navegador para 'Nenhuma' e desative cabeçalhos/rodapés antes de imprimir.</p>
+
+</body>
+</html>
