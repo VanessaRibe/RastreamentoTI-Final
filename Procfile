@@ -1,1 +1,2 @@
-web: python -m gunicorn app:create_app\(\)
+# Procfile (CORRIGIDO PARA CHAMAR O SERVIDOR)
+web: gunicorn app:create_app\(\)
