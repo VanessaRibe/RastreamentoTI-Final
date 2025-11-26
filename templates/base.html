@@ -21,7 +21,15 @@
                     <span class="icon">🏠</span> Dashboard
                 </a>
 
-                
+                {% if current_user.is_admin %}
+                    <div class="nav-section-title">ADMINISTRAÇÃO</div>
+                    <a href="{{ url_for('main.cadastrar_usuario') }}" class="nav-item">👥 Usuários</a>
+                    <a href="{{ url_for('main.upload_equipamentos') }}" class="nav-item">⬆️ Lote/Upload</a>
+                    <a href="{{ url_for('main.exportar_dados') }}" class="nav-item">⬇️ Exportar Excel</a>
+                    <a href="{{ url_for('main.cadastrar_equipamento') }}" class="nav-item">➕ Cadastro Ind.</a>
+                    <a href="{{ url_for('main.gerenciar_locais') }}" class="nav-item">📍 Ger. Locais</a>
+                    <a href="{{ url_for('main.historico_geral') }}" class="nav-item">📜 Auditoria</a>
+                {% endif %}
 
                 <div class="nav-section-title">OPERAÇÕES</div>
                 <a href="{{ url_for('main.checkout') }}" class="nav-item">📤 Checkout</a>
