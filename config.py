@@ -7,7 +7,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     """Configuração principal para o Flask e SQLAlchemy."""
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'uma-chave-muito-secreta-e-dificil'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'sanar-chave-ratreamento'
 
     # Caminho do DB para a raiz do projeto (caminho absoluto)
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \

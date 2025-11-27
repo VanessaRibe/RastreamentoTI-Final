@@ -14,8 +14,8 @@ def initialize_database():
     print("--- Inicializando Dados ---")
 
     # 1. Criação do Usuário Admin Padrão
-    admin_user = User(username='admin', is_admin=True)
-    admin_user.set_password('SUA_NOVA_SENHA_FORTE')  # <<< DEFINA SUA SENHA!
+    admin_user = User(username='Sanar Admin', is_admin=True)
+    admin_user.set_password('Cetrus2207')  # <<< DEFINA SUA SENHA!
     db.session.add(admin_user)
 
     # 2. Limpeza e Criação dos Locais (Garantindo ID 1)
