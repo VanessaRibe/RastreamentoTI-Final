@@ -1,25 +1,22 @@
-# create_admin.py (Refatorado para ser chamado pelo app.py)
-
 from extensions import db
 from models import User, Predio, Sala
-from config import Config
-import sys
-
 
 def initialize_database():
     """Cria o Admin e Locais Iniciais. Chamado apenas se o DB estiver vazio."""
 
-    # Este código será chamado dentro do app_context, no app.py
-
     print("--- Inicializando Dados ---")
+
+    # Verifica se já existe um usuário admin
+    if User.query.filter_by(username='Sanar Admin').first():
+        print("Admin já existe. Inicialização ignorada.")
+        return
 
     # 1. Criação do Usuário Admin Padrão
     admin_user = User(username='Sanar Admin', is_admin=True)
-    admin_user.set_password('Cetrus2207')  # <<< DEFINA SUA SENHA!
+    admin_user.set_password('Cetrus2207')
     db.session.add(admin_user)
 
     # 2. Limpeza e Criação dos Locais (Garantindo ID 1)
-    # Limpamos apenas para garantir um estado limpo.
     db.session.query(Sala).delete()
     db.session.query(Predio).delete()
     db.session.commit()
@@ -48,5 +45,3 @@ def initialize_database():
     db.session.commit()
     print("Sucesso: Locais iniciais criados.")
     print("Sucesso: Usuário Admin criado.")
-
-# O bloco if __name__ == '__main__': é removido para que o app.py possa importar.
