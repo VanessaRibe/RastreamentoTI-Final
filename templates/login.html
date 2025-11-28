@@ -2,47 +2,18 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Rastreamento TI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Teste de Login</title>
 </head>
-<body class="login-page-wrapper">
+<body>
+    <h1>Login funcionando!</h1>
+    <form method="POST" action="/login">
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" name="username" required>
 
-    <div class="login-card">
-        <div class="logo-area" style="text-align: center; margin-bottom: 20px;">
-            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo TI" style="height: 50px;">
-        </div>
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" required>
 
-        <h2>Entrar</h2>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <form method="POST" action="{{ url_for('main.login') }}">
-
-            <label for="username">Usuário (Admin/Técnico)</label>
-            <input type="text" id="username" name="username" required>
-
-            <label for="password">Senha</label>
-            <input type="password" id="password" name="password" required>
-
-            <div style="margin: 10px 0;">
-                <input type="checkbox" id="remember-me" name="remember-me" style="width: auto;">
-                <label for="remember-me" style="font-size: 0.9em;">Lembrar-me</label>
-            </div>
-
-            <button type="submit" class="login-submit-btn">Entrar</button>
-        </form>
-
-        <div class="login-links" style="margin-top: 20px; text-align: center;">
-             <a href="{{ url_for('main.reset_request') }}">Esqueceu a senha?</a>
-        </div>
-
-    </div>
+        <button type="submit">Entrar</button>
+    </form>
 </body>
 </html>
