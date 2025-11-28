@@ -412,8 +412,8 @@ def retorno_estoque():
             return redirect(url_for('main.retorno_estoque'))
 
 
-
 @main.route('/public')
 def public_home():
-    return render_template('home.html')  # você pode criar esse template
+    return render_template('home.html')
+
 
