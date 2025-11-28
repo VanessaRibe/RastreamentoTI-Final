@@ -53,3 +53,6 @@ if __name__ == '__main__':
 
 # --- Ponto de entrada para Gunicorn/Railway ---
 app = create_app()
+@app.route("/")
+def home():
+    return "<h1>Aplicação RastreamentoTI está rodando com sucesso!</h1>"
