@@ -414,7 +414,7 @@ def retorno_estoque():
 
 @main.route('/teste')
 def teste_login():
-    return render_template('login.html')
+    return "<h1>Aplicação está online. Rota /teste funcionando.</h1>"
 
 
 

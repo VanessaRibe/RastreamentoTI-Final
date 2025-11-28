@@ -6,6 +6,7 @@ from extensions import db, login_manager
 from models import Notificacao, User
 from create_admin import initialize_database
 from routes import main as main_blueprint
+app.register_blueprint(main_blueprint)
 
 def create_app(config_class=Config):
     """Função Factory para criar a aplicação Flask."""
