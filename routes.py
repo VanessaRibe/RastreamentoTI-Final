@@ -411,9 +411,10 @@ def retorno_estoque():
             flash('Erro na validação do Retorno ao Estoque.', 'danger')
             return redirect(url_for('main.retorno_estoque'))
 
-
 @main.route('/public')
 def public_home():
-    return render_template('home.html')
+    return "<h1>Aplicação RastreamentoTI está online. Faça login para continuar.</h1>"
+
+
 
 
