@@ -48,8 +48,7 @@ def create_app(config_class=Config):
     return app
 
 # --- Ponto de entrada local ---
-if __name__ == '__main__':
-    create_app().run(debug=True)
+    create_app().run()
 
 # --- Ponto de entrada para Gunicorn/Railway ---
 app = create_app()
