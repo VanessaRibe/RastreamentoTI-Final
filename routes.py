@@ -413,7 +413,9 @@ def retorno_estoque():
 
 @main.route('/public')
 def public_home():
-    return "<h1>Aplicação RastreamentoTI está online. Faça login para continuar.</h1>"
+    return render_template('login.html')
+
+
 
 
 
