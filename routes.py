@@ -411,10 +411,10 @@ def retorno_estoque():
             flash('Erro na validação do Retorno ao Estoque.', 'danger')
             return redirect(url_for('main.retorno_estoque'))
 
-@main.route('/public')
-def public_home():
-    return render_template('login.html')
 
+@main.route('/teste')
+def teste_login():
+    return render_template('login.html')
 
 
 
