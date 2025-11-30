@@ -6,6 +6,12 @@ from datetime import datetime
 import pandas as pd
 import io
 
+main = Blueprint("main", __name__)
+
+@main.route("/teste")
+def teste():
+    return "<h1>Aplicação online</h1>"
+
 # Importações dos Modelos e Extensões
 from models import User, Equipamento, Predio, Sala, HistoricoCheckpoint, Notificacao, db
 from config import Config
