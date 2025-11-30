@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: rastreamento-app
+    name: rastreamentoti-final
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
