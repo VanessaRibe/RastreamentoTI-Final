@@ -7,8 +7,6 @@ db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-
-    # ✅ Aqui você configura o banco usando a variável do Railway
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -17,5 +15,4 @@ def create_app():
 
     return app
 
-# ✅ Criação da instância do app
 app = create_app()
