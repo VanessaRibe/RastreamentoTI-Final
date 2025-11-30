@@ -16,3 +16,6 @@ def create_app():
     return app
 
 app = create_app()
+@app.route("/teste")
+def teste():
+    return "<h1>Aplicação online</h1>"
