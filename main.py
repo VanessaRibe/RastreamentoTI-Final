@@ -200,6 +200,7 @@ def historico_equipamento(equipamento_id):
     return render_template("historico_equipamento.html", equipamento=equipamento, historico=historico)
 
 # --- Gerenciar Locais (Prédio e Sala) ---
+
 @main.route("/gerenciar_locais", methods=["GET", "POST"])
 @login_required
 def gerenciar_locais():
