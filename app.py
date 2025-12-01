@@ -1,4 +1,5 @@
 from flask import Flask
+from extensions import db
 from flask_login import LoginManager
 from auth import auth as auth_blueprint
 from flask_sqlalchemy import SQLAlchemy
