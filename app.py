@@ -1,41 +1,32 @@
 from flask import Flask
-from flask_login import LoginManager
 from extensions import db
-from auth import auth as auth_blueprint
-from main import main as main_blueprint
+from flask_login import LoginManager
 from models import User
-from create_admin import initialize_database
-import os
+from main import main
 
-app = Flask(__name__)
+def create_app():
+    app = Flask(__name__)
+    app.config['SECRET_KEY'] = 'sua_chave_secreta_aqui'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'  # ou DATABASE_URL do Render
 
-# Configuração do banco
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.secret_key = "sua_chave_secreta_aqui"  # Troque por uma chave segura
+    # Inicializar extensões
+    db.init_app(app)
 
-db.init_app(app)
+    login_manager = LoginManager()
+    login_manager.login_view = "auth.login"
+    login_manager.init_app(app)
 
-# Configuração do login
-login_manager = LoginManager()
-login_manager.login_view = "auth.login"
-login_manager.init_app(app)
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+    # Registrar blueprints
+    app.register_blueprint(main)
 
-# Rota principal
-@app.route("/")
-def index():
-    return "<h1>Sistema online</h1>"
+    return app
 
-# Rota de setup inicial (executa create_admin.py)
-@app.route("/setup")
-def setup():
-    initialize_database()
-    return "<h1>Setup executado com sucesso.</h1>"
+# Objeto app que o gunicorn vai usar
+app = create_app()
 
-# Registro dos blueprints
-app.register_blueprint(auth_blueprint)
-app.register_blueprint(main_blueprint)
+if __name__ == "__main__":
+    app.run(debug=True)
