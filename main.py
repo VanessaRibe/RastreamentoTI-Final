@@ -43,6 +43,10 @@ def dashboard():
     return render_template("dashboard.html", metrics=metrics, notificacoes=notificacoes)
 
 # --- Cadastro de usuário básico ---
+# ⚠️ IMPORTANTE: essa rota deve estar em auth.py, não em main.py
+# Se você quiser manter aqui, certifique-se de que app.py registra apenas main_blueprint
+# Caso contrário, mova para auth.py e troque @main.route por @auth.route
+
 @main.route("/cadastrar_usuario", methods=["GET", "POST"])
 @login_required
 def cadastrar_usuario():
