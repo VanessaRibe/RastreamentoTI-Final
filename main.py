@@ -103,7 +103,7 @@ def checkin(equipamento_id):
     equipamento = Equipamento.query.get_or_404(equipamento_id)
     status_anterior = equipamento.status_atual
     equipamento.status_atual = "Em Uso"
-    equipamento.localizacao_atual_id = request.form.get("sala_id")  # vincula a uma sala
+    equipamento.localizacao_atual_id = request.form.get("sala_id")
     db.session.commit()
 
     sala_destino = Sala.query.get(equipamento.localizacao_atual_id) if equipamento.localizacao_atual_id else None
@@ -173,3 +173,30 @@ def historico_equipamento(equipamento_id):
     ).order_by(HistoricoCheckpoint.data_alteracao.desc()).all()
 
     return render_template("historico_equipamento.html", equipamento=equipamento, historico=historico)
+
+# --- Gerenciar Locais (Prédio e Sala) ---
+@main.route("/gerenciar_locais", methods=["GET", "POST"])
+@login_required
+def gerenciar_locais():
+    if request.method == "POST":
+        tipo = request.form.get("tipo")
+        nome = request.form.get("nome")
+        predio_id = request.form.get("predio_id")
+
+        if tipo == "predio":
+            novo_predio = Predio(nome=nome)
+            db.session.add(novo_predio)
+            db.session.commit()
+            flash("Prédio cadastrado com sucesso!", "success")
+
+        elif tipo == "sala":
+            nova_sala = Sala(nome=nome, predio_id=predio_id)
+            db.session.add(nova_sala)
+            db.session.commit()
+            flash("Sala cadastrada com sucesso!", "success")
+
+        return redirect(url_for("main.gerenciar_locais"))
+
+    predios = Predio.query.all()
+    salas = Sala.query.all()
+    return render_template("gerenciar_locais.html", predios=predios, salas=salas)
