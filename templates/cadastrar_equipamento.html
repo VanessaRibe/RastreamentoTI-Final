@@ -1,38 +1,22 @@
 {% extends "base.html" %}
 
-{% block title %}Cadastrar Equipamento{% endblock %}
+{% block title %}Cadastro de Equipamento{% endblock %}
+{% block page_header %}Novo Equipamento{% endblock %}
 
 {% block content %}
-    <h1>➕ Cadastro de Novo Equipamento de T.I.</h1>
-
-    <p>Esta funcionalidade permite registrar um novo ativo no sistema usando o Número de Série como identificador principal (código de barras).</p>
-
-    <div class="flash info" style="margin-bottom: 20px;">
-        <strong>Status Inicial:</strong> O equipamento será automaticamente definido como
-        <span style="font-weight: bold; color: green;">"Em Estoque"</span> na localização:
-        <span style="font-weight: bold;">{{ estoque_sala.nome }} ({{ estoque_sala.predio.nome }})</span>.
-    </div>
-
     <form method="POST" action="{{ url_for('main.cadastrar_equipamento') }}">
-
         <div style="margin-bottom: 15px;">
-            <label for="numero_serie" style="display: inline-block; width: 150px;">Número de Série:</label>
-            <input type="text" id="numero_serie" name="numero_serie" required
-                   placeholder="Ex: SN-ABC12345 (Código de Barras)" style="width: 250px;">
-            <small style="color: gray;">(Este campo deve ser único)</small>
+            <label for="numero_serie">Número de Série:</label>
+            <input type="text" id="numero_serie" name="numero_serie" required>
         </div>
 
         <div style="margin-bottom: 15px;">
-            <label for="nome_equipamento" style="display: inline-block; width: 150px;">Nome do Equipamento:</label>
-            <input type="text" id="nome_equipamento" name="nome_equipamento" required
-                   placeholder="Ex: Notebook DELL Latitude 5420" style="width: 400px;">
+            <label for="nome_equipamento">Nome do Equipamento:</label>
+            <input type="text" id="nome_equipamento" name="nome_equipamento" required>
         </div>
 
-        <br>
-        <button type="submit"
-                style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        <button type="submit" style="padding: 8px 15px; background-color: #28a745; color: white; border: none; border-radius: 5px;">
             Cadastrar Equipamento
         </button>
     </form>
-
 {% endblock %}
