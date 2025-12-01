@@ -1,10 +1,33 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from models import Equipamento, Notificacao
+from models import Equipamento, Notificacao, HistoricoCheckpoint, Predio, Sala
 from sqlalchemy import func
 from extensions import db
+import pandas as pd
+from werkzeug.utils import secure_filename
+import os
 
 main = Blueprint("main", __name__)
+
+# Pasta para uploads
+UPLOAD_FOLDER = "uploads"
+ALLOWED_EXTENSIONS = {"xlsx"}
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# --- Função auxiliar para registrar histórico ---
+def registrar_checkpoint(equipamento, status_anterior, status_novo, usuario, predio_destino=None, sala_destino=None):
+    checkpoint = HistoricoCheckpoint(
+        equipamento_id=equipamento.id,
+        status_anterior=status_anterior,
+        status_novo=status_novo,
+        predio_destino_id=predio_destino.id if predio_destino else None,
+        sala_destino_id=sala_destino.id if sala_destino else None,
+        responsavel_alteracao_id=usuario.id
+    )
+    db.session.add(checkpoint)
+    db.session.commit()
 
 # --- Rota de teste ---
 @main.route("/teste")
@@ -64,9 +87,12 @@ def cadastrar_usuario():
 @login_required
 def checkout(equipamento_id):
     equipamento = Equipamento.query.get_or_404(equipamento_id)
+    status_anterior = equipamento.status_atual
     equipamento.status_atual = "Em Trânsito"
-    equipamento.usuario_responsavel = current_user.nome
     db.session.commit()
+
+    registrar_checkpoint(equipamento, status_anterior, equipamento.status_atual, current_user)
+
     flash("Equipamento em trânsito.", "info")
     return redirect(url_for("main.dashboard"))
 
@@ -75,19 +101,75 @@ def checkout(equipamento_id):
 @login_required
 def checkin(equipamento_id):
     equipamento = Equipamento.query.get_or_404(equipamento_id)
+    status_anterior = equipamento.status_atual
     equipamento.status_atual = "Em Uso"
-    equipamento.localizacao_atual = request.form.get("localizacao")
+    equipamento.localizacao_atual_id = request.form.get("sala_id")  # vincula a uma sala
     db.session.commit()
+
+    sala_destino = Sala.query.get(equipamento.localizacao_atual_id) if equipamento.localizacao_atual_id else None
+    predio_destino = sala_destino.predio if sala_destino else None
+
+    registrar_checkpoint(equipamento, status_anterior, equipamento.status_atual, current_user, predio_destino, sala_destino)
+
     flash("Equipamento em uso.", "success")
     return redirect(url_for("main.dashboard"))
 
+# --- Retorno ao estoque ---
 @main.route("/retorno/<int:equipamento_id>", methods=["POST"])
 @login_required
 def retorno_estoque(equipamento_id):
     equipamento = Equipamento.query.get_or_404(equipamento_id)
+    status_anterior = equipamento.status_atual
     equipamento.status_atual = "Em Estoque"
-    equipamento.localizacao_atual = request.form.get("localizacao")
-    equipamento.usuario_responsavel = None  # remove vínculo com usuário
+    equipamento.localizacao_atual_id = request.form.get("sala_id")
     db.session.commit()
+
+    sala_destino = Sala.query.get(equipamento.localizacao_atual_id) if equipamento.localizacao_atual_id else None
+    predio_destino = sala_destino.predio if sala_destino else None
+
+    registrar_checkpoint(equipamento, status_anterior, equipamento.status_atual, current_user, predio_destino, sala_destino)
+
     flash("Equipamento retornado ao estoque.", "success")
     return redirect(url_for("main.dashboard"))
+
+# --- Upload em lote via Excel ---
+@main.route("/upload_equipamentos", methods=["GET", "POST"])
+@login_required
+def upload_equipamentos():
+    if request.method == "POST":
+        file = request.files.get("file")
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(filepath)
+
+            df = pd.read_excel(filepath)
+
+            for _, row in df.iterrows():
+                equipamento = Equipamento(
+                    numero_serie=row["numero_serie"],
+                    nome_equipamento=row["nome_equipamento"],
+                    status_atual=row.get("status_atual", "Em Estoque"),
+                    localizacao_atual_id=row.get("sala_id"),
+                    responsavel_cadastro_id=current_user.id
+                )
+                db.session.add(equipamento)
+
+            db.session.commit()
+            flash("Equipamentos cadastrados em lote com sucesso!", "success")
+            return redirect(url_for("main.dashboard"))
+
+        flash("Arquivo inválido. Envie um Excel (.xlsx).", "danger")
+
+    return render_template("upload_equipamentos.html")
+
+# --- Histórico de movimentações ---
+@main.route("/historico/<int:equipamento_id>")
+@login_required
+def historico_equipamento(equipamento_id):
+    equipamento = Equipamento.query.get_or_404(equipamento_id)
+    historico = HistoricoCheckpoint.query.filter_by(
+        equipamento_id=equipamento.id
+    ).order_by(HistoricoCheckpoint.data_alteracao.desc()).all()
+
+    return render_template("historico_equipamento.html", equipamento=equipamento, historico=historico)
