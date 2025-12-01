@@ -2,68 +2,33 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rastreamento TI - {% block title %}{% endblock %}</title>
+    <title>{% block title %}Rastreamento TI{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-
-    <div class="app-wrapper">
-
-        <aside class="sidebar">
-            <div class="logo-area">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo TI">
-            </div>
-
-            <nav class="nav-links">
-            {% if current_user.is_authenticated %}
-                <a href="{{ url_for('main.dashboard') }}" class="nav-item active">
-                    <span class="icon">🏠</span> Dashboard
-                </a>
-
-                {% if current_user.is_admin %}
-                    <div class="nav-section-title">ADMINISTRAÇÃO</div>
-                    <a href="{{ url_for('main.cadastrar_usuario') }}" class="nav-item">👥 Usuários</a>
-                    <a href="{{ url_for('main.upload_equipamentos') }}" class="nav-item">⬆️ Lote/Upload</a>
-                    <a href="{{ url_for('main.exportar_dados') }}" class="nav-item">⬇️ Exportar Excel</a>
-                    <a href="{{ url_for('main.cadastrar_equipamento') }}" class="nav-item">➕ Cadastro Ind.</a>
-                    <a href="{{ url_for('main.gerenciar_locais') }}" class="nav-item">📍 Ger. Locais</a>
-                    <a href="{{ url_for('main.historico_geral') }}" class="nav-item">📜 Auditoria</a>
-                {% endif %}
-
-                <div class="nav-section-title">OPERAÇÕES</div>
-                <a href="{{ url_for('main.checkout') }}" class="nav-item">📤 Checkout</a>
-                <a href="{{ url_for('main.checkin') }}" class="nav-item">📥 Checkin</a>
-                <a href="{{ url_for('main.retorno_estoque') }}" class="nav-item">🔙 Retorno Estoque</a>
-            {% else %}
-                <a href="{{ url_for('main.login') }}" class="nav-item active">Login</a>
-            {% endif %}
+    <header>
+        <h1>Sistema de Rastreamento TI</h1>
+        {% if current_user.is_authenticated %}
+            <p>Bem-vindo, {{ current_user.username }}!</p>
+            <nav>
+                <a href="{{ url_for('main.dashboard') }}">🏠 Dashboard</a>
+                <a href="{{ url_for('main.cadastrar_usuario') }}">👥 Usuários</a>
+                <a href="{{ url_for('auth.login') }}">➡️ Sair</a>
             </nav>
+        {% else %}
+            <nav>
+                <a href="{{ url_for('auth.login') }}">Login</a>
+            </nav>
+        {% endif %}
+    </header>
 
-            <div class="sidebar-footer">
-            {% if current_user.is_authenticated %}
-                <a href="{{ url_for('main.notificacoes') }}" class="nav-item">🔔 Notif. ({{ notificacoes_nao_lidas_count or 0 }})</a>
-                <a href="{{ url_for('main.logout') }}" class="nav-item logout-btn">➡️ Sair</a>
-            {% endif %}
-            </div>
-        </aside>
+    <main>
+        {% block page_header %}{% endblock %}
+        {% block content %}{% endblock %}
+    </main>
 
-        <main class="main-content">
-            <div class="content-body">
-                <h2 class="dashboard-title">{% block page_header %}{% endblock %}</h2>
-
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="flash {{ category }}">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-
-                {% block content %}{% endblock %}
-            </div>
-        </main>
-    </div>
-
+    <footer>
+        <p>&copy; 2025 VanessaRibe</p>
+    </footer>
 </body>
 </html>
