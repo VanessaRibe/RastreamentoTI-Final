@@ -5,10 +5,15 @@ from extensions import db
 
 main = Blueprint("main", __name__)
 
+def get_notificacoes_nao_lidas():
+    # Substitua por lógica real se tiver modelo de notificações
+    return 0
+
 @main.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html", notificacoes_nao_lidas_count=0)
+    notificacoes = get_notificacoes_nao_lidas()
+    return render_template("dashboard.html", notificacoes_nao_lidas_count=notificacoes)
 
 @main.route("/cadastrar_usuario", methods=["GET", "POST"])
 @login_required
@@ -35,4 +40,5 @@ def cadastrar_usuario():
         return redirect(url_for("main.cadastrar_usuario"))
 
     usuarios = User.query.all()
-    return render_template("cadastrar_usuario.html", usuarios=usuarios, notificacoes_nao_lidas_count=0)
+    notificacoes = get_notificacoes_nao_lidas()
+    return render_template("cadastrar_usuario.html", usuarios=usuarios, notificacoes_nao_lidas_count=notificacoes)
