@@ -1,5 +1,3 @@
 {
-  "build": {
-    "dockerfile": "Dockerfile"
-  }
+  "start": "gunicorn app:app"
 }
