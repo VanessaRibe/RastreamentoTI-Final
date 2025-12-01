@@ -229,4 +229,9 @@ def gerenciar_locais():
 # --- Marcar notificação como lida ---
 @main.route("/notificacao/<int:notificacao_id>/lida", methods=["POST"])
 @login_required
-def marcar_not
+def marcar_notificacao_lida(notificacao_id):
+    notificacao = Notificacao.query.get_or_404(notificacao_id)
+    notificacao.lida = True
+    db.session.commit()
+    flash("Notificação marcada como lida.", "info")
+    return redirect(url_for("main.dashboard"))
