@@ -7,6 +7,5 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        # Aqui você pode validar o usuário
-        return redirect(url_for("main.teste"))
+        return redirect(url_for("index"))
     return render_template("login.html")

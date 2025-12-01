@@ -12,5 +12,9 @@ login_manager.init_app(app)  # Agora sim: usa o app
 @login_required
 def teste():
     return "<h1>Aplicação online</h1>"
+@app.route("/")
+def index():
+    return "<h1>Sistema online</h1>"
+
 
 app.register_blueprint(auth_blueprint)
