@@ -1,66 +1,12 @@
 {% extends "base.html" %}
-
-{% block title %}Cadastro de Usuários{% endblock %}
-{% block page_header %}Cadastro de Novo Usuário{% endblock %}
-
+{% block title %}Cadastro de Usuário{% endblock %}
+{% block page_header %}Novo Usuário{% endblock %}
 {% block content %}
-    <p>Apenas administradores podem criar novos usuários (Técnicos ou outros Admins).</p>
-
-    <form method="POST" action="{{ url_for('main.cadastrar_usuario') }}" style="margin-bottom: 30px;">
-        <div style="margin-bottom: 15px;">
-            <label for="username">Nome de Usuário (Login):</label>
-            <input type="text" id="username" name="username" required>
-        </div>
-
-        <div style="margin-bottom: 15px;">
-            <label for="email">E-mail (Para Recuperação):</label>
-            <input type="email" id="email" name="email">
-        </div>
-
-        <div style="margin-bottom: 15px;">
-            <label for="matricula">Matrícula/ID Funcional:</label>
-            <input type="text" id="matricula" name="matricula">
-        </div>
-
-        <div style="margin-bottom: 15px;">
-            <label for="password">Senha:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-
-        <div style="margin-bottom: 15px;">
-            <input type="checkbox" id="is_admin" name="is_admin">
-            <label for="is_admin">Conceder Acesso de Administrador?</label>
-        </div>
-
-        <button type="submit" style="padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px;">
-            Criar Usuário
-        </button>
+    <form method="POST">
+        <input type="text" name="username" placeholder="Nome de usuário" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="text" name="matricula" placeholder="Matrícula" required>
+        <button type="submit">Cadastrar</button>
     </form>
-
-    <hr>
-
-    <h2>Usuários Existentes</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Usuário</th>
-                <th>Matrícula</th>
-                <th>E-mail</th>
-                <th>Tipo</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in usuarios %}
-                <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.matricula or 'N/A' }}</td>
-                    <td>{{ user.email or 'N/A' }}</td>
-                    <td>{% if user.is_admin %}**ADMIN** 👑{% else %}Técnico{% endif %}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
 {% endblock %}
+    
