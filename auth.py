@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, request, redirect, url_for
+from flask_login import login_user
+from models import User
 
 auth = Blueprint("auth", __name__)
 
@@ -7,7 +9,13 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        return redirect(url_for("index"))
+        user = User.query.filter_by(username=username).first()
+        if user and user.check_password(password):
+            login_user(user)
+            next_page = request.args.get("next")
+            return redirect(next_page or url_for("main.dashboard"))
+        return "<h1>Credenciais inválidas</h1>"
+
     return """
         <h1>Login funcionando!</h1>
         <form method="POST">
