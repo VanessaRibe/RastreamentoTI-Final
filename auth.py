@@ -24,3 +24,7 @@ def login():
             <button type="submit">Entrar</button>
         </form>
     """
+@main.route("/cadastrar_usuario")
+@login_required
+def cadastrar_usuario():
+    return render_template("cadastrar_usuario.html")
