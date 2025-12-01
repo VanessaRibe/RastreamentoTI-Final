@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from models import Equipamento, Notificacao
 from sqlalchemy import func
-from extensions import db  # Certifique-se que o extensions.py exporta db corretamente
+from extensions import db
 
 main = Blueprint("main", __name__)
 
@@ -11,7 +11,7 @@ main = Blueprint("main", __name__)
 def teste():
     return "<h1>Aplicação online</h1>"
 
-# --- Dashboard corrigido ---
+# --- Dashboard ---
 @main.route("/dashboard")
 @login_required
 def dashboard():
@@ -42,11 +42,7 @@ def dashboard():
 
     return render_template("dashboard.html", metrics=metrics, notificacoes=notificacoes)
 
-# --- Cadastro de usuário básico ---
-# ⚠️ IMPORTANTE: essa rota deve estar em auth.py, não em main.py
-# Se você quiser manter aqui, certifique-se de que app.py registra apenas main_blueprint
-# Caso contrário, mova para auth.py e troque @main.route por @auth.route
-
+# --- Cadastro de usuário ---
 @main.route("/cadastrar_usuario", methods=["GET", "POST"])
 @login_required
 def cadastrar_usuario():
@@ -62,3 +58,25 @@ def cadastrar_usuario():
         return redirect(url_for("main.dashboard"))
 
     return render_template("cadastrar_usuario.html")
+
+# --- Check-out de equipamento ---
+@main.route("/checkout/<int:equipamento_id>", methods=["POST"])
+@login_required
+def checkout(equipamento_id):
+    equipamento = Equipamento.query.get_or_404(equipamento_id)
+    equipamento.status_atual = "Em Trânsito"
+    equipamento.usuario_responsavel = current_user.nome
+    db.session.commit()
+    flash("Equipamento em trânsito.", "info")
+    return redirect(url_for("main.dashboard"))
+
+# --- Check-in de equipamento ---
+@main.route("/checkin/<int:equipamento_id>", methods=["POST"])
+@login_required
+def checkin(equipamento_id):
+    equipamento = Equipamento.query.get_or_404(equipamento_id)
+    equipamento.status_atual = "Em Uso"
+    equipamento.localizacao_atual = request.form.get("localizacao")
+    db.session.commit()
+    flash("Equipamento em uso.", "success")
+    return redirect(url_for("main.dashboard"))
