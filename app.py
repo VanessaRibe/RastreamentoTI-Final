@@ -1,1 +1,8 @@
-from flask import Flask\n\napp = Flask(__name__)\n\n@app.route('/teste')\ndef teste():\n    return '<h1>Aplicação online</h1>'
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/teste")
+def teste():
+    return "<h1>AplicaÃ§Ã£o online</h1>"
+
