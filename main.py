@@ -80,3 +80,14 @@ def checkin(equipamento_id):
     db.session.commit()
     flash("Equipamento em uso.", "success")
     return redirect(url_for("main.dashboard"))
+
+@main.route("/retorno/<int:equipamento_id>", methods=["POST"])
+@login_required
+def retorno_estoque(equipamento_id):
+    equipamento = Equipamento.query.get_or_404(equipamento_id)
+    equipamento.status_atual = "Em Estoque"
+    equipamento.localizacao_atual = request.form.get("localizacao")
+    equipamento.usuario_responsavel = None  # remove vínculo com usuário
+    db.session.commit()
+    flash("Equipamento retornado ao estoque.", "success")
+    return redirect(url_for("main.dashboard"))
