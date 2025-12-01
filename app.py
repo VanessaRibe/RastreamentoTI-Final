@@ -13,6 +13,7 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = "sua_chave_secreta_aqui"  # Troque por uma chave segura
+
 db.init_app(app)
 
 # Configuração do login
