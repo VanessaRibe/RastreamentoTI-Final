@@ -7,3 +7,8 @@ main = Blueprint("main", __name__)
 @login_required
 def dashboard():
     return render_template("dashboard.html")
+
+@main.route("/cadastrar_usuario")
+@login_required
+def cadastrar_usuario():
+    return render_template("cadastrar_usuario.html")
