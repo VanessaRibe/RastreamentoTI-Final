@@ -4,3 +4,14 @@
 {% block content %}
     <p>Dashboard carregado com sucesso!</p>
 {% endblock %}
+<h3>Notificações</h3>
+<ul>
+    {% for notif in notificacoes %}
+        <li>
+            {{ notif.mensagem }} - {{ notif.data_criacao }}
+            <form action="{{ url_for('main.marcar_notificacao_lida', notificacao_id=notif.id) }}" method="POST">
+                <button type="submit">Marcar como lida</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>

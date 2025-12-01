@@ -6,6 +6,7 @@ from extensions import db
 import pandas as pd
 from werkzeug.utils import secure_filename
 import os
+import qrcode
 
 main = Blueprint("main", __name__)
 
@@ -28,6 +29,27 @@ def registrar_checkpoint(equipamento, status_anterior, status_novo, usuario, pre
     )
     db.session.add(checkpoint)
     db.session.commit()
+
+# --- Função auxiliar para criar notificações ---
+def criar_notificacao(mensagem, usuario_alvo_id, equipamento_id=None):
+    notificacao = Notificacao(
+        mensagem=mensagem,
+        usuario_alvo_id=usuario_alvo_id,
+        equipamento_id=equipamento_id
+    )
+    db.session.add(notificacao)
+    db.session.commit()
+
+# --- Função auxiliar para gerar QR Code ---
+def gerar_qrcode(equipamento):
+    url = url_for("main.historico_equipamento", equipamento_id=equipamento.id, _external=True)
+    qr = qrcode.make(url)
+    path = f"static/qrcodes/{equipamento.numero_serie}.png"
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    qr.save(path)
+    equipamento.qr_code_path = path
+    db.session.commit()
+    return path
 
 # --- Rota de teste ---
 @main.route("/teste")
@@ -92,6 +114,7 @@ def checkout(equipamento_id):
     db.session.commit()
 
     registrar_checkpoint(equipamento, status_anterior, equipamento.status_atual, current_user)
+    criar_notificacao(f"Equipamento {equipamento.nome_equipamento} saiu em trânsito.", current_user.id, equipamento.id)
 
     flash("Equipamento em trânsito.", "info")
     return redirect(url_for("main.dashboard"))
@@ -110,6 +133,7 @@ def checkin(equipamento_id):
     predio_destino = sala_destino.predio if sala_destino else None
 
     registrar_checkpoint(equipamento, status_anterior, equipamento.status_atual, current_user, predio_destino, sala_destino)
+    criar_notificacao(f"Equipamento {equipamento.nome_equipamento} está em uso.", current_user.id, equipamento.id)
 
     flash("Equipamento em uso.", "success")
     return redirect(url_for("main.dashboard"))
@@ -128,6 +152,7 @@ def retorno_estoque(equipamento_id):
     predio_destino = sala_destino.predio if sala_destino else None
 
     registrar_checkpoint(equipamento, status_anterior, equipamento.status_atual, current_user, predio_destino, sala_destino)
+    criar_notificacao(f"Equipamento {equipamento.nome_equipamento} retornou ao estoque.", current_user.id, equipamento.id)
 
     flash("Equipamento retornado ao estoque.", "success")
     return redirect(url_for("main.dashboard"))
@@ -200,3 +225,8 @@ def gerenciar_locais():
     predios = Predio.query.all()
     salas = Sala.query.all()
     return render_template("gerenciar_locais.html", predios=predios, salas=salas)
+
+# --- Marcar notificação como lida ---
+@main.route("/notificacao/<int:notificacao_id>/lida", methods=["POST"])
+@login_required
+def marcar_not
