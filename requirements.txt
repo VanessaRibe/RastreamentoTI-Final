@@ -1,8 +1,8 @@
-flask
-flask-login
-flask-sqlalchemy
+Flask
+Flask-Login
+Flask-SQLAlchemy
+Flask-Migrate
 pandas
 openpyxl
-werkzeug
 qrcode[pil]
 gunicorn
