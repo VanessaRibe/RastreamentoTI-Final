@@ -8,7 +8,7 @@ main = Blueprint("main", __name__)
 @main.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html")
+    return render_template("dashboard.html", notificacoes_nao_lidas_count=0)
 
 @main.route("/cadastrar_usuario", methods=["GET", "POST"])
 @login_required
@@ -35,4 +35,4 @@ def cadastrar_usuario():
         return redirect(url_for("main.cadastrar_usuario"))
 
     usuarios = User.query.all()
-    return render_template("cadastrar_usuario.html", usuarios=usuarios)
+    return render_template("cadastrar_usuario.html", usuarios=usuarios, notificacoes_nao_lidas_count=0)
