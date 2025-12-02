@@ -11,8 +11,8 @@ COPY . .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Expõe a porta padrão
-EXPOSE 8000
+# Expõe a porta padrão do Fly.io
+EXPOSE 8080
 
 # Comando para iniciar o app
 CMD ["gunicorn", "app:app"]
