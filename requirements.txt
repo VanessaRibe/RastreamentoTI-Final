@@ -1,10 +1,12 @@
 Flask
+gunicorn
+python-dotenv
 Flask-Login
 Flask-SQLAlchemy
 Flask-Migrate
 pandas
 openpyxl
 qrcode[pil]
-gunicorn
 psycopg2-binary
-python-dotenv
+
+
