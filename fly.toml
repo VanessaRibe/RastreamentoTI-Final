@@ -1,0 +1,18 @@
+app = "rastreamentoti-final"
+primary_region = "gru"
+
+[env]
+  FLASK_ENV = "production"
+  SECRET_KEY = "Sanar_rastreamento_FORTE"
+
+[[services]]
+  internal_port = 8000
+  protocol = "tcp"
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443

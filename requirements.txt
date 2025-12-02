@@ -7,3 +7,4 @@ openpyxl
 qrcode[pil]
 gunicorn
 psycopg2-binary
+python-dotenv
