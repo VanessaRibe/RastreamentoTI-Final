@@ -1,12 +1,3 @@
 Flask
 gunicorn
 python-dotenv
-Flask-Login
-Flask-SQLAlchemy
-Flask-Migrate
-pandas
-openpyxl
-qrcode[pil]
-psycopg2-binary
-
-
