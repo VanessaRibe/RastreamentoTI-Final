@@ -18,6 +18,21 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
 
+    # --- BLOCO DE RECUPERAÇÃO DE ADMIN (ATIVADO PARA: Sanar Adm) ---
+    with app.app_context():
+        # Garante que as tabelas existam antes de buscar o usuário
+        db.create_all()
+        
+        # Busca e promove o seu usuário específico
+        user_to_promote = User.query.filter_by(username='Sanar Adm').first()
+        if user_to_promote:
+            user_to_promote.is_admin = True
+            db.session.commit()
+            print(f"SUCESSO: O usuario {user_to_promote.username} agora é ADMINISTRADOR!")
+        else:
+            print("AVISO: Usuario 'Sanar Adm' nao encontrado no banco de dados.")
+    # --------------------------------------------------------------
+
     app.register_blueprint(main)
 
     return app
